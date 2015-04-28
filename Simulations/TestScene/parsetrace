@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+grep -E 'MobilityManager.*changed' Castalia-Trace.txt > mobi.grep
+grep -E 'SET STATE to TX|Received packet|Failed packet' Castalia-Trace.txt > radio.grep
+grep -E 'MobilityManager.*initial' Castalia-Trace.txt > topology.grep
+
+casparse 1 radio.grep 
+casparse 2 topology.grep
+casparse 3 mobi.grep 
+
+rm *.grep
