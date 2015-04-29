@@ -239,7 +239,7 @@ void parseEnergyConsumption(char* file_name, int numNodes){
 
 			// --- get energy value ---
 			getColumn(line,10,buf);
-			energy += (atof(buf)*0.001);///(double)numNodes;
+			energy += (atof(buf)*0.001)/(double)numNodes;
 			//energy += atof(buf)/(double)numNodes;
 			printf(" %f",energy);
 			printf("\n");

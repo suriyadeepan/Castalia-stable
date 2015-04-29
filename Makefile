@@ -32,6 +32,7 @@ INCLUDE_PATH = \
     -Isrc/node/communication/mac/bypassMac \
     -Isrc/node/communication/mac/hMac \
     -Isrc/node/communication/mac/mac802154 \
+    -Isrc/node/communication/mac/mads \
     -Isrc/node/communication/mac/tMac \
     -Isrc/node/communication/mac/tunableMac \
     -Isrc/node/communication/radio \
@@ -77,6 +78,7 @@ OBJS = \
     $O/src/node/communication/mac/bypassMac/BypassMAC.o \
     $O/src/node/communication/mac/hMac/HMac.o \
     $O/src/node/communication/mac/mac802154/Mac802154.o \
+    $O/src/node/communication/mac/mads/Mads.o \
     $O/src/node/communication/mac/tMac/TMAC.o \
     $O/src/node/communication/mac/tunableMac/TunableMAC.o \
     $O/src/node/communication/radio/Radio.o \
@@ -101,6 +103,7 @@ OBJS = \
     $O/src/node/communication/mac/baselineBanMac/BaselineMacPacket_m.o \
     $O/src/node/communication/mac/hMac/HMacPacket_m.o \
     $O/src/node/communication/mac/mac802154/Mac802154Packet_m.o \
+    $O/src/node/communication/mac/mads/MadsPacket_m.o \
     $O/src/node/communication/mac/tMac/TMacPacket_m.o \
     $O/src/node/communication/mac/tunableMac/TunableMacControl_m.o \
     $O/src/node/communication/mac/tunableMac/TunableMacPacket_m.o \
@@ -124,6 +127,7 @@ MSGFILES = \
     src/node/communication/mac/baselineBanMac/BaselineMacPacket.msg \
     src/node/communication/mac/hMac/HMacPacket.msg \
     src/node/communication/mac/mac802154/Mac802154Packet.msg \
+    src/node/communication/mac/mads/MadsPacket.msg \
     src/node/communication/mac/tMac/TMacPacket.msg \
     src/node/communication/mac/tunableMac/TunableMacControl.msg \
     src/node/communication/mac/tunableMac/TunableMacPacket.msg \
@@ -231,6 +235,7 @@ clean:
 	$(Q)-rm -f src/node/communication/mac/bypassMac/*_m.cc src/node/communication/mac/bypassMac/*_m.h
 	$(Q)-rm -f src/node/communication/mac/hMac/*_m.cc src/node/communication/mac/hMac/*_m.h
 	$(Q)-rm -f src/node/communication/mac/mac802154/*_m.cc src/node/communication/mac/mac802154/*_m.h
+	$(Q)-rm -f src/node/communication/mac/mads/*_m.cc src/node/communication/mac/mads/*_m.h
 	$(Q)-rm -f src/node/communication/mac/tMac/*_m.cc src/node/communication/mac/tMac/*_m.h
 	$(Q)-rm -f src/node/communication/mac/tunableMac/*_m.cc src/node/communication/mac/tunableMac/*_m.h
 	$(Q)-rm -f src/node/communication/radio/*_m.cc src/node/communication/radio/*_m.h
@@ -253,403 +258,469 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc src/*.cc src/helpStructures/*.cc src/node/*.cc src/node/application/*.cc src/node/application/bridgeTest/*.cc src/node/application/connectivityMap/*.cc src/node/application/simpleAggregation/*.cc src/node/application/throughputTest/*.cc src/node/application/valuePropagation/*.cc src/node/application/valueReporting/*.cc src/node/communication/*.cc src/node/communication/mac/*.cc src/node/communication/mac/baselineBanMac/*.cc src/node/communication/mac/bypassMac/*.cc src/node/communication/mac/hMac/*.cc src/node/communication/mac/mac802154/*.cc src/node/communication/mac/tMac/*.cc src/node/communication/mac/tunableMac/*.cc src/node/communication/radio/*.cc src/node/communication/routing/*.cc src/node/communication/routing/bypassRouting/*.cc src/node/communication/routing/multipathRingsRouting/*.cc src/node/mobilityManager/*.cc src/node/mobilityManager/lineMobilityManager/*.cc src/node/mobilityManager/noMobilityManager/*.cc src/node/mobilityManager/randWpMobilityManager/*.cc src/node/resourceManager/*.cc src/node/sensorManager/*.cc src/physicalProcess/*.cc src/physicalProcess/carsPhysicalProcess/*.cc src/physicalProcess/customizablePhysicalProcess/*.cc src/wirelessChannel/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc src/*.cc src/helpStructures/*.cc src/node/*.cc src/node/application/*.cc src/node/application/bridgeTest/*.cc src/node/application/connectivityMap/*.cc src/node/application/simpleAggregation/*.cc src/node/application/throughputTest/*.cc src/node/application/valuePropagation/*.cc src/node/application/valueReporting/*.cc src/node/communication/*.cc src/node/communication/mac/*.cc src/node/communication/mac/baselineBanMac/*.cc src/node/communication/mac/bypassMac/*.cc src/node/communication/mac/hMac/*.cc src/node/communication/mac/mac802154/*.cc src/node/communication/mac/mads/*.cc src/node/communication/mac/tMac/*.cc src/node/communication/mac/tunableMac/*.cc src/node/communication/radio/*.cc src/node/communication/routing/*.cc src/node/communication/routing/bypassRouting/*.cc src/node/communication/routing/multipathRingsRouting/*.cc src/node/mobilityManager/*.cc src/node/mobilityManager/lineMobilityManager/*.cc src/node/mobilityManager/noMobilityManager/*.cc src/node/mobilityManager/randWpMobilityManager/*.cc src/node/resourceManager/*.cc src/node/sensorManager/*.cc src/physicalProcess/*.cc src/physicalProcess/carsPhysicalProcess/*.cc src/physicalProcess/customizablePhysicalProcess/*.cc src/wirelessChannel/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/src/helpStructures/CastaliaModule.o: src/helpStructures/CastaliaModule.cc \
-  src/helpStructures/DebugInfoWriter.h \
   src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h
+  src/helpStructures/DebugInfoWriter.h \
+  src/helpStructures/CastaliaModule.h \
+  src/CastaliaMessages.h
 $O/src/helpStructures/DebugInfoWriter.o: src/helpStructures/DebugInfoWriter.cc \
   src/helpStructures/DebugInfoWriter.h
 $O/src/helpStructures/TimerService.o: src/helpStructures/TimerService.cc \
   src/helpStructures/TimerService.h \
   src/CastaliaMessages.h \
   src/helpStructures/TimerServiceMessage_m.h
-$O/src/node/application/VirtualApplication.o: src/node/application/VirtualApplication.cc \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/application/VirtualApplication.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/CastaliaMessages.h \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h
-$O/src/node/application/bridgeTest/BridgeTest.o: src/node/application/bridgeTest/BridgeTest.cc \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/application/VirtualApplication.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/TimerService.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/application/bridgeTest/BridgeTest.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/application/connectivityMap/ConnectivityMap.o: src/node/application/connectivityMap/ConnectivityMap.cc \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/application/VirtualApplication.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/TimerService.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/CastaliaMessages.h \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/node/application/connectivityMap/ConnectivityMap.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/application/simpleAggregation/SimpleAggregation.o: src/node/application/simpleAggregation/SimpleAggregation.cc \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/node/application/simpleAggregation/SimpleAggregation.h \
-  src/helpStructures/TimerService.h \
-  src/node/application/VirtualApplication.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h
-$O/src/node/application/throughputTest/ThroughputTest.o: src/node/application/throughputTest/ThroughputTest.cc \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/application/throughputTest/ThroughputTest.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/application/VirtualApplication.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/TimerService.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/application/valuePropagation/ValuePropagation.o: src/node/application/valuePropagation/ValuePropagation.cc \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h \
-  src/node/application/VirtualApplication.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/application/valuePropagation/ValuePropagation.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/CastaliaMessages.h \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h
-$O/src/node/application/valueReporting/ValueReporting.o: src/node/application/valueReporting/ValueReporting.cc \
-  src/node/application/valueReporting/ValueReportingPacket_m.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/application/VirtualApplication.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/application/valueReporting/ValueReporting.h \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h \
-  src/CastaliaMessages.h
-$O/src/node/communication/mac/VirtualMac.o: src/node/communication/mac/VirtualMac.cc \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/communication/mac/VirtualMac.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/routing/RoutingPacket_m.h \
-  src/CastaliaMessages.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h
-$O/src/node/communication/mac/baselineBanMac/BaselineBANMac.o: src/node/communication/mac/baselineBanMac/BaselineBANMac.cc \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/routing/RoutingPacket_m.h \
-  src/CastaliaMessages.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/communication/mac/baselineBanMac/BaselineBANMac.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/communication/mac/VirtualMac.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/helpStructures/TimerService.h \
-  src/node/communication/mac/baselineBanMac/BaselineMacPacket_m.h \
+$O/src/helpStructures/TimerServiceMessage_m.o: src/helpStructures/TimerServiceMessage_m.cc \
   src/helpStructures/TimerServiceMessage_m.h
-$O/src/node/communication/mac/bypassMac/BypassMAC.o: src/node/communication/mac/bypassMac/BypassMAC.cc \
-  src/node/communication/mac/MacPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/node/communication/routing/RoutingPacket_m.h \
-  src/CastaliaMessages.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/mac/bypassMac/BypassMAC.h \
+$O/src/node/application/ApplicationPacket_m.o: src/node/application/ApplicationPacket_m.cc \
+  src/node/application/ApplicationPacket_m.h
+$O/src/node/application/VirtualApplication.o: src/node/application/VirtualApplication.cc \
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/application/VirtualApplication.h \
   src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/communication/mac/VirtualMac.h \
   src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h
-$O/src/node/communication/mac/hMac/HMac.o: src/node/communication/mac/hMac/HMac.cc \
-  src/node/communication/mac/VirtualMac.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/communication/mac/hMac/HMac.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/resourceManager/ResourceManager.h \
   src/helpStructures/TimerService.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h
+$O/src/node/application/bridgeTest/BridgeTest.o: src/node/application/bridgeTest/BridgeTest.cc \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/application/bridgeTest/BridgeTest.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/application/VirtualApplication.h \
+  src/node/sensorManager/SensorManagerMessage_m.h
+$O/src/node/application/connectivityMap/ConnectivityMap.o: src/node/application/connectivityMap/ConnectivityMap.cc \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/application/connectivityMap/ConnectivityMap.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/application/VirtualApplication.h \
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h
+$O/src/node/application/simpleAggregation/SimpleAggregation.o: src/node/application/simpleAggregation/SimpleAggregation.cc \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/application/VirtualApplication.h \
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/node/application/simpleAggregation/SimpleAggregation.h
+$O/src/node/application/throughputTest/ThroughputTest.o: src/node/application/throughputTest/ThroughputTest.cc \
+  src/helpStructures/TimerService.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/node/application/VirtualApplication.h \
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/application/throughputTest/ThroughputTest.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h
+$O/src/node/application/valuePropagation/ValuePropagation.o: src/node/application/valuePropagation/ValuePropagation.cc \
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/application/VirtualApplication.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/application/valuePropagation/ValuePropagation.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h
+$O/src/node/application/valueReporting/ValueReporting.o: src/node/application/valueReporting/ValueReporting.cc \
+  src/helpStructures/TimerService.h \
+  src/node/application/valueReporting/ValueReportingPacket_m.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/communication/radio/Radio.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/application/valueReporting/ValueReporting.h \
+  src/node/application/VirtualApplication.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h
+$O/src/node/application/valueReporting/ValueReportingPacket_m.o: src/node/application/valueReporting/ValueReportingPacket_m.cc \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/application/valueReporting/ValueReportingPacket_m.h
+$O/src/node/communication/mac/MacPacket_m.o: src/node/communication/mac/MacPacket_m.cc \
+  src/node/communication/mac/MacPacket_m.h
+$O/src/node/communication/mac/VirtualMac.o: src/node/communication/mac/VirtualMac.cc \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/helpStructures/TimerService.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/mac/VirtualMac.h \
+  src/CastaliaMessages.h
+$O/src/node/communication/mac/baselineBanMac/BaselineBANMac.o: src/node/communication/mac/baselineBanMac/BaselineBANMac.cc \
+  src/CastaliaMessages.h \
+  src/node/communication/mac/baselineBanMac/BaselineBANMac.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/mac/VirtualMac.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/mac/baselineBanMac/BaselineMacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/helpStructures/TimerServiceMessage_m.h
+$O/src/node/communication/mac/baselineBanMac/BaselineMacPacket_m.o: src/node/communication/mac/baselineBanMac/BaselineMacPacket_m.cc \
+  src/node/communication/mac/baselineBanMac/BaselineMacPacket_m.h \
+  src/node/communication/mac/MacPacket_m.h
+$O/src/node/communication/mac/bypassMac/BypassMAC.o: src/node/communication/mac/bypassMac/BypassMAC.cc \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/communication/mac/bypassMac/BypassMAC.h \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/mac/VirtualMac.h \
+  src/CastaliaMessages.h
+$O/src/node/communication/mac/hMac/HMac.o: src/node/communication/mac/hMac/HMac.cc \
+  src/helpStructures/TimerService.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/node/communication/mac/hMac/HMac.h \
+  src/node/communication/mac/VirtualMac.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/communication/mac/hMac/HMacPacket_m.h
+$O/src/node/communication/mac/hMac/HMacPacket_m.o: src/node/communication/mac/hMac/HMacPacket_m.cc \
   src/node/communication/mac/hMac/HMacPacket_m.h \
+  src/node/communication/mac/MacPacket_m.h
+$O/src/node/communication/mac/mac802154/Mac802154.o: src/node/communication/mac/mac802154/Mac802154.cc \
+  src/node/communication/radio/RadioControlMessage_m.h \
   src/helpStructures/TimerServiceMessage_m.h \
   src/node/communication/routing/RoutingPacket_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
   src/node/communication/radio/Radio.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/communication/mac/mac802154/Mac802154.o: src/node/communication/mac/mac802154/Mac802154.cc \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/TimerService.h \
   src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/CastaliaMessages.h \
-  src/node/communication/routing/RoutingPacket_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/communication/mac/mac802154/Mac802154.h \
   src/node/resourceManager/ResourceManagerMessage_m.h \
   src/node/communication/mac/mac802154/Mac802154Packet_m.h \
-  src/node/communication/mac/mac802154/Mac802154.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/communication/mac/VirtualMac.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h
-$O/src/node/communication/mac/tMac/TMAC.o: src/node/communication/mac/tMac/TMAC.cc \
-  src/node/communication/mac/VirtualMac.h \
   src/node/communication/radio/RadioSupportFunctions.h \
   src/helpStructures/DebugInfoWriter.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/TimerService.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/node/communication/routing/RoutingPacket_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
   src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/mac/VirtualMac.h \
   src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/CastaliaMessages.h
+$O/src/node/communication/mac/mac802154/Mac802154Packet_m.o: src/node/communication/mac/mac802154/Mac802154Packet_m.cc \
+  src/node/communication/mac/mac802154/Mac802154Packet_m.h \
+  src/node/communication/mac/MacPacket_m.h
+$O/src/node/communication/mac/mads/Mads.o: src/node/communication/mac/mads/Mads.cc \
+  src/node/communication/mac/mads/Mads.h \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/helpStructures/TimerService.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/communication/mac/mads/MadsPacket_m.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/mac/VirtualMac.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/radio/RadioSupportFunctions.h
+$O/src/node/communication/mac/tMac/TMAC.o: src/node/communication/mac/tMac/TMAC.cc \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/node/communication/radio/Radio.h \
   src/node/communication/mac/tMac/TMacPacket_m.h \
   src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/communication/mac/tMac/TMAC.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/communication/mac/tunableMac/TunableMAC.o: src/node/communication/mac/tunableMac/TunableMAC.cc \
   src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/mac/tunableMac/TunableMacPacket_m.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/communication/mac/tMac/TMAC.h \
+  src/CastaliaMessages.h \
   src/node/communication/mac/VirtualMac.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/mac/tunableMac/TunableMacControl_m.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h
+$O/src/node/communication/mac/tMac/TMacPacket_m.o: src/node/communication/mac/tMac/TMacPacket_m.cc \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/mac/tMac/TMacPacket_m.h
+$O/src/node/communication/mac/tunableMac/TunableMAC.o: src/node/communication/mac/tunableMac/TunableMAC.cc \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/helpStructures/TimerServiceMessage_m.h \
   src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/communication/mac/VirtualMac.h \
   src/node/communication/mac/tunableMac/TunableMAC.h \
+  src/node/communication/mac/tunableMac/TunableMacPacket_m.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/CastaliaMessages.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/communication/mac/tunableMac/TunableMacControl_m.h
+$O/src/node/communication/mac/tunableMac/TunableMacControl_m.o: src/node/communication/mac/tunableMac/TunableMacControl_m.cc \
+  src/node/communication/mac/tunableMac/TunableMacControl_m.h
+$O/src/node/communication/mac/tunableMac/TunableMacPacket_m.o: src/node/communication/mac/tunableMac/TunableMacPacket_m.cc \
+  src/node/communication/mac/tunableMac/TunableMacPacket_m.h \
+  src/node/communication/mac/MacPacket_m.h
+$O/src/node/communication/radio/Radio.o: src/node/communication/radio/Radio.cc \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/helpStructures/DebugInfoWriter.h \
   src/node/communication/mac/MacPacket_m.h \
   src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/CastaliaMessages.h \
-  src/node/communication/routing/RoutingPacket_m.h
-$O/src/node/communication/radio/Radio.o: src/node/communication/radio/Radio.cc \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/CastaliaMessages.h \
-  src/node/communication/mac/MacPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h
-$O/src/node/communication/radio/RadioSupportFunctions.o: src/node/communication/radio/RadioSupportFunctions.cc \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/CastaliaMessages.h \
+  src/CastaliaMessages.h
+$O/src/node/communication/radio/RadioControlMessage_m.o: src/node/communication/radio/RadioControlMessage_m.cc \
   src/node/communication/radio/RadioControlMessage_m.h
+$O/src/node/communication/radio/RadioSupportFunctions.o: src/node/communication/radio/RadioSupportFunctions.cc \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/CastaliaMessages.h
+$O/src/node/communication/routing/RoutingPacket_m.o: src/node/communication/routing/RoutingPacket_m.cc \
+  src/node/communication/routing/RoutingPacket_m.h
 $O/src/node/communication/routing/VirtualRouting.o: src/node/communication/routing/VirtualRouting.cc \
-  src/helpStructures/TimerService.h \
-  src/node/communication/routing/VirtualRouting.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
   src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/routing/VirtualRouting.h \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/TimerService.h \
+  src/node/communication/radio/Radio.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
   src/node/communication/radio/RadioSupportFunctions.h \
   src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
   src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/communication/radio/Radio.h \
-  src/helpStructures/CastaliaModule.h \
   src/CastaliaMessages.h \
-  src/node/communication/routing/RoutingPacket_m.h \
-  src/node/communication/mac/MacPacket_m.h \
   src/wirelessChannel/WirelessChannelMessages_m.h
 $O/src/node/communication/routing/bypassRouting/BypassRouting.o: src/node/communication/routing/bypassRouting/BypassRouting.cc \
-  src/node/communication/mac/MacPacket_m.h \
   src/node/communication/routing/bypassRouting/BypassRouting.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/CastaliaMessages.h \
   src/node/communication/routing/RoutingPacket_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
   src/node/application/ApplicationPacket_m.h \
-  src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/resourceManager/ResourceManager.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/node/communication/routing/VirtualRouting.h \
-  src/node/communication/routing/bypassRouting/BypassRoutingPacket_m.h \
-  src/helpStructures/TimerServiceMessage_m.h \
-  src/helpStructures/TimerService.h
-$O/src/node/communication/routing/multipathRingsRouting/MultipathRingsRouting.o: src/node/communication/routing/multipathRingsRouting/MultipathRingsRouting.cc \
-  src/node/communication/radio/RadioSupportFunctions.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingControl_m.h \
-  src/node/resourceManager/ResourceManager.h \
+  src/node/communication/radio/Radio.h \
+  src/helpStructures/CastaliaModule.h \
   src/helpStructures/TimerService.h \
-  src/helpStructures/TimerServiceMessage_m.h \
   src/node/communication/routing/VirtualRouting.h \
-  src/node/communication/routing/RoutingPacket_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
-  src/node/communication/radio/Radio.h \
-  src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingPacket_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/communication/mac/MacPacket_m.h \
   src/node/communication/radio/RadioControlMessage_m.h \
-  src/node/application/ApplicationPacket_m.h \
-  src/node/communication/routing/multipathRingsRouting/MultipathRingsRouting.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/mobilityManager/VirtualMobilityManager.o: src/node/mobilityManager/VirtualMobilityManager.cc \
-  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/CastaliaMessages.h \
+  src/node/communication/routing/bypassRouting/BypassRoutingPacket_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
   src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h
+$O/src/node/communication/routing/bypassRouting/BypassRoutingPacket_m.o: src/node/communication/routing/bypassRouting/BypassRoutingPacket_m.cc \
+  src/node/communication/routing/bypassRouting/BypassRoutingPacket_m.h \
+  src/node/communication/routing/RoutingPacket_m.h
+$O/src/node/communication/routing/multipathRingsRouting/MultipathRingsRouting.o: src/node/communication/routing/multipathRingsRouting/MultipathRingsRouting.cc \
   src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
   src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/node/mobilityManager/lineMobilityManager/LineMobilityManager.o: src/node/mobilityManager/lineMobilityManager/LineMobilityManager.cc \
-  src/CastaliaMessages.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/communication/mac/MacPacket_m.h \
+  src/node/communication/radio/RadioSupportFunctions.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingPacket_m.h \
   src/helpStructures/CastaliaModule.h \
-  src/node/mobilityManager/MobilityManagerMessage_m.h \
-  src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/helpStructures/TimerService.h \
+  src/node/application/ApplicationPacket_m.h \
+  src/node/communication/radio/Radio.h \
+  src/node/communication/routing/RoutingPacket_m.h \
+  src/helpStructures/TimerServiceMessage_m.h \
+  src/node/communication/radio/RadioControlMessage_m.h \
+  src/node/communication/routing/VirtualRouting.h \
+  src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingControl_m.h \
+  src/node/communication/routing/multipathRingsRouting/MultipathRingsRouting.h
+$O/src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingControl_m.o: src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingControl_m.cc \
+  src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingControl_m.h
+$O/src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingPacket_m.o: src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingPacket_m.cc \
+  src/node/communication/routing/multipathRingsRouting/MultipathRingsRoutingPacket_m.h \
+  src/node/communication/routing/RoutingPacket_m.h
+$O/src/node/mobilityManager/MobilityManagerMessage_m.o: src/node/mobilityManager/MobilityManagerMessage_m.cc \
+  src/node/mobilityManager/MobilityManagerMessage_m.h
+$O/src/node/mobilityManager/VirtualMobilityManager.o: src/node/mobilityManager/VirtualMobilityManager.cc \
+  src/helpStructures/CastaliaModule.h \
+  src/helpStructures/DebugInfoWriter.h \
   src/node/resourceManager/ResourceManagerMessage_m.h \
   src/node/mobilityManager/VirtualMobilityManager.h \
-  src/node/mobilityManager/lineMobilityManager/LineMobilityManager.h \
-  src/helpStructures/DebugInfoWriter.h
-$O/src/node/mobilityManager/noMobilityManager/NoMobilityManager.o: src/node/mobilityManager/noMobilityManager/NoMobilityManager.cc \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h
+$O/src/node/mobilityManager/lineMobilityManager/LineMobilityManager.o: src/node/mobilityManager/lineMobilityManager/LineMobilityManager.cc \
   src/wirelessChannel/WirelessChannelMessages_m.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/node/mobilityManager/MobilityManagerMessage_m.h \
+  src/helpStructures/CastaliaModule.h \
+  src/node/mobilityManager/lineMobilityManager/LineMobilityManager.h
+$O/src/node/mobilityManager/noMobilityManager/NoMobilityManager.o: src/node/mobilityManager/noMobilityManager/NoMobilityManager.cc \
   src/helpStructures/CastaliaModule.h \
   src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
   src/node/mobilityManager/noMobilityManager/NoMobilityManager.h \
+  src/helpStructures/DebugInfoWriter.h \
   src/node/resourceManager/ResourceManagerMessage_m.h
 $O/src/node/mobilityManager/randWpMobilityManager/RandWpMobilityManager.o: src/node/mobilityManager/randWpMobilityManager/RandWpMobilityManager.cc \
-  src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/node/mobilityManager/randWpMobilityManager/RandWpMobilityManager.h \
+  src/helpStructures/CastaliaModule.h \
   src/node/mobilityManager/MobilityManagerMessage_m.h \
+  src/CastaliaMessages.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
   src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
+  src/node/mobilityManager/randWpMobilityManager/RandWpMobilityManager.h \
   src/helpStructures/DebugInfoWriter.h \
-  src/node/mobilityManager/VirtualMobilityManager.h
+  src/node/resourceManager/ResourceManagerMessage_m.h
 $O/src/node/resourceManager/ResourceManager.o: src/node/resourceManager/ResourceManager.cc \
-  src/helpStructures/DebugInfoWriter.h \
-  src/node/resourceManager/ResourceManager.h \
   src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/node/resourceManager/ResourceManager.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/helpStructures/CastaliaModule.h
+$O/src/node/resourceManager/ResourceManagerMessage_m.o: src/node/resourceManager/ResourceManagerMessage_m.cc \
   src/node/resourceManager/ResourceManagerMessage_m.h
 $O/src/node/sensorManager/SensorManager.o: src/node/sensorManager/SensorManager.cc \
-  src/node/sensorManager/SensorManager.h \
   src/wirelessChannel/WirelessChannelMessages_m.h \
-  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
   src/CastaliaMessages.h \
-  src/helpStructures/CastaliaModule.h \
   src/node/resourceManager/ResourceManagerMessage_m.h \
   src/helpStructures/DebugInfoWriter.h \
+  src/helpStructures/CastaliaModule.h \
   src/physicalProcess/PhysicalProcessMessage_m.h \
-  src/node/mobilityManager/VirtualMobilityManager.h
+  src/node/sensorManager/SensorManagerMessage_m.h \
+  src/node/sensorManager/SensorManager.h
+$O/src/node/sensorManager/SensorManagerMessage_m.o: src/node/sensorManager/SensorManagerMessage_m.cc \
+  src/node/sensorManager/SensorManagerMessage_m.h
+$O/src/physicalProcess/PhysicalProcessMessage_m.o: src/physicalProcess/PhysicalProcessMessage_m.cc \
+  src/physicalProcess/PhysicalProcessMessage_m.h
 $O/src/physicalProcess/carsPhysicalProcess/CarsPhysicalProcess.o: src/physicalProcess/carsPhysicalProcess/CarsPhysicalProcess.cc \
   src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/helpStructures/DebugInfoWriter.h \
   src/physicalProcess/carsPhysicalProcess/CarsPhysicalProcess.h \
-  src/helpStructures/CastaliaModule.h \
   src/CastaliaMessages.h \
-  src/helpStructures/DebugInfoWriter.h \
-  src/physicalProcess/PhysicalProcessMessage_m.h
-$O/src/physicalProcess/customizablePhysicalProcess/CustomizablePhysicalProcess.o: src/physicalProcess/customizablePhysicalProcess/CustomizablePhysicalProcess.cc \
-  src/helpStructures/DebugInfoWriter.h \
   src/physicalProcess/PhysicalProcessMessage_m.h \
-  src/physicalProcess/customizablePhysicalProcess/CustomizablePhysicalProcess.h \
-  src/CastaliaMessages.h \
+  src/helpStructures/CastaliaModule.h
+$O/src/physicalProcess/customizablePhysicalProcess/CustomizablePhysicalProcess.o: src/physicalProcess/customizablePhysicalProcess/CustomizablePhysicalProcess.cc \
+  src/physicalProcess/PhysicalProcessMessage_m.h \
   src/helpStructures/CastaliaModule.h \
-  src/node/resourceManager/ResourceManagerMessage_m.h
-$O/src/wirelessChannel/WirelessChannel.o: src/wirelessChannel/WirelessChannel.cc \
-  src/wirelessChannel/WirelessChannelTemporal.h \
-  src/node/mobilityManager/VirtualMobilityManager.h \
-  src/helpStructures/DebugInfoWriter.h \
   src/node/resourceManager/ResourceManagerMessage_m.h \
-  src/CastaliaMessages.h \
+  src/helpStructures/DebugInfoWriter.h \
+  src/physicalProcess/customizablePhysicalProcess/CustomizablePhysicalProcess.h \
+  src/CastaliaMessages.h
+$O/src/wirelessChannel/WirelessChannel.o: src/wirelessChannel/WirelessChannel.cc \
   src/helpStructures/CastaliaModule.h \
+  src/wirelessChannel/WirelessChannelTemporal.h \
+  src/wirelessChannel/WirelessChannelMessages_m.h \
   src/wirelessChannel/WirelessChannel.h \
+  src/node/mobilityManager/VirtualMobilityManager.h \
+  src/CastaliaMessages.h \
+  src/node/resourceManager/ResourceManagerMessage_m.h \
+  src/helpStructures/DebugInfoWriter.h
+$O/src/wirelessChannel/WirelessChannelMessages_m.o: src/wirelessChannel/WirelessChannelMessages_m.cc \
   src/wirelessChannel/WirelessChannelMessages_m.h
 $O/src/wirelessChannel/WirelessChannelTemporal.o: src/wirelessChannel/WirelessChannelTemporal.cc \
   src/wirelessChannel/WirelessChannelTemporal.h

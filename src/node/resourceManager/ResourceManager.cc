@@ -169,3 +169,4 @@ void ResourceManager::RamFree(int numBytes)
 	totalRamData = (totalRamData < 0) ? 0 : totalRamData;
 }
 
+double ResourceManager::getLifetime(void) { return remainingEnergy; }
