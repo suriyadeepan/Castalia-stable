@@ -41,4 +41,4 @@
 
 	VERSION	      --> File with the current version/build info
 
-# ===============  READ THE INSTALATION GUIDE AND THE USER'S MANUAL  ==============
+	READ THE INSTALATION GUIDE AND THE USER'S MANUAL  
