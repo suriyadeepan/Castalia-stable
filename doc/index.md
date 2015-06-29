@@ -12,7 +12,7 @@ This post will serve as a step 0 for Castalia beginners. Since Castalia is an Om
 ```
   cd Castalia-stable
   ./makemake
-  make -j($nproc)
+  make -j$(nproc)
 ```
 
 ## Further Reading
